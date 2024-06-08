@@ -1,0 +1,37 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use work.up_pack.all;
+
+entity ALU is
+    port (
+        A     : in  std_logic_vector(15 downto 0);
+        B     : in  std_logic_vector(15 downto 0);
+        alufs : in  integer; -- Supposons que ALU_FCTS est de type integer
+        S     : out std_logic_vector(15 downto 0)
+    );
+end entity ALU;
+
+architecture arch_alu of ALU is
+    signal result : std_logic_vector(15 downto 0);
+begin
+    process(A, B, alufs)
+    begin
+        case alufs is
+            when up_pack.ADD =>
+                result <= std_logic_vector(unsigned(A) + unsigned(B));
+            when up_pack.SUB =>
+                result <= std_logic_vector(unsigned(A) - unsigned(B));
+            when up_pack.AND =>
+                result <= A and B;
+            when up_pack.OR =>
+                result <= A or B;
+            when up_pack.XOR =>
+                result <= A xor B;
+            when others =>
+                result <= (others => '0');
+        end case;
+    end process;
+
+    S <= result; -- Déplacer l'assignation de S à l'intérieur du processus
+end architecture arch_alu; 

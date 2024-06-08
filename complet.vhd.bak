@@ -1,0 +1,29 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use work.all;
+entity complet is
+port (clk : in std_logic;
+reset : in std_logic;
+data_bus : inout std_logic_vector(15 downto 0);
+addr_bus : inout std_logic_vector(11 downto 0)
+);
+end complet;
+architecture arch_complet of complet is
+signal MEMRQ : std_logic; -- memory request
+signal RNW : std_logic; -- read/write op
+begin
+processeur : entity mu0 port map (reset => reset,
+clk => clk,
+data_bus => data_bus,
+addr_bus => addr_bus,
+mem_rq => MEMrq,
+rnw => RnW
+);
+memoire : entity ram0 port map (clk => clk,
+MEMrq => MEMrq,
+RnW => RnW,
+addr_bus => addr_bus,
+data_bus => data_bus
+);
+end arch_mu0_mem;

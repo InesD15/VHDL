@@ -1,0 +1,25 @@
+library IEEE; 
+use IEEE.std__logic_1164.all;
+use IEEE.numeric_std.all;
+use work.up_pack.all;
+entity ir_reg is
+port( cIk, raz, load : in std_ logic;
+data_in: in std_logic_vector (15 dovnto 0);
+data_out : out std logic _vector (11 downto 0);ù
+ opcode : out OPCODE):
+end ir_reg;
+architecture arch_ir_reg of in_reg is
+signal interne: std logic vector (3 dounto 0);
+begin
+process (clk, raz)
+begin
+if rising_edge(clk) then
+if raz = '1' then
+interne <= (others =>'0');
+data out <= (others =>'0');
+elsif load='1' then
+interne <= data_in(15 downto 12);
+data_out <= data_in(11 downto 0);
+end if;
+end if;
+end process;

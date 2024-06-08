@@ -1,0 +1,83 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+use work.up_pack.all;
+use work.all;
+entity mu0 is
+port(
+reset, clk : in std_logic;
+data_bus : inout std_logic_vector(15 downto 0);
+addr_bus : inout std_logic_vector(11 downto 0);
+mem_rq : out std_logic;
+rnw : out std_logic
+);
+end mu0;
+architecture arch_mu0 of mu0 is
+signal opcode : OPCODE; -- opcode operation
+signal raz : std_logic; -- raz for registers
+signal ir_out : std_logic_vector(11 downto 0); -- output of IR
+signal pc_out : std_logic_vector(11 downto 0); -- output of PC
+signal r_out : std_logic_vector(11 downto 0); -- output of R
+signal r_1_out : std_logic_vector(11 downto 0); -- output of R-1
+signal alu_out : std_logic_vector(15 downto 0); -- output of ALU
+signal acc_out : std_logic_vector(15 downto 0); -- output of ACC
+signal muxb_out : std_logic_vector(15 downto 0); -- output of MUXb
+signal concat : std_logic_vector(15 downto 0);
+signal alufs : ALU_FCTS; -- function code for alu
+signal ir_ld : std_logic; -- load IR
+signal pc_ld : std_logic; -- load PC
+signal r_ld : std_logic; -- load R
+signal acc_ld : std_logic; -- load ACC
+signal acc_oe : std_logic; -- enable out buffer
+signal selA : std_logic_vector(1 downto 0); -- multiplexer A select
+signal selB : std_logic; -- multiplexer B select
+signal selC : std_logic_vector(1 downto 0); -- multiplexer C select
+signal accZ : std_logic; -- accumulator all zero's
+signal acc15 : std_logic; -- accumualtor sign bit
+begin
+seq : entity sequenceur port map (
+clk => clk,
+reset => reset,
+accz => accZ,
+acc15 => acc15,
+opcode => opcode,
+raz => raz,
+selA => selA,
+);
+pc : entity pc_reg port map (
+clk => clk,
+raz => raz,
+load => pc_ld,
+);
+acc : entity accumulator port map (
+clk => clk,
+raz => raz,
+load => acc_ld,
+);
+ual : entity alu port map (
+A => acc_out,
+B => muxb_out,
+alufs => alufs,
+S => alu_out
+);
+ir : entity ir_reg port map (
+clk => clk,
+raz => raz,
+load => ir_ld,
+);
+muxB : entity mux_B port map (
+sel => selB,
+e_0 => concat,
+e_1 => data_bus,
+S => muxb_out);
+muxA : entity mux_4 port map (
+sel => selA,
+e_0 => pc_out,
+S => addr_bus
+);
+muxb_outporte_3E : entity tristate port map (
+oe => acc_oe,
+data_in => acc_out,
+data_out => data_bus
+);
+end arch_mu0 ;

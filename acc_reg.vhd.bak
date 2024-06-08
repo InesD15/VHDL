@@ -1,0 +1,45 @@
+library IEEE;
+
+use IEEE.std_logic_1164.all;
+
+use IEEE.numeric_std.all;
+
+entity accumulator is
+
+port(clk, raz, load in std logic;
+
+data in : in std_logic_vector (15 downto 0);
+
+data out acc15, accz : out std_logic_vector (15 downto 0); : out std logic
+
+):
+
+end accumulator;
+
+architecture arch acc of accumulator is
+
+signal q_reg std_logic_vector (15 downto 0);
+
+begin
+
+process (clk)
+
+begin
+
+if rising edge (clk) then
+
+if raz='1' then reg <= (others => '0');
+
+elsif load='1' then q_reg <= std_logic_vector (unsigned (q_reg) + unsigned (data_in)); end if:
+
+end if:
+
+end process;
+
+data_out <= q_reg;
+
+acc15 <=q_reg (15):
+
+accz <= '1' when q_reg (others => '0') else '0';
+
+end arch acc:
